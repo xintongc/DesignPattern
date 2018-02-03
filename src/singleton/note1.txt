@@ -1,0 +1,386 @@
+认知
+    目的
+        设计模式 / 重构
+        如何写出好的代码?
+            1.  用更少的代码 写出 同样内容
+            2.  提高代码的重用性
+                减少代码改变量
+            对比
+                1.
+                    int a = ma(3, 4);
+                
+                2.
+                    int a = Math.max(3, 4);
+
+                3.  
+                    Addition a = new Addition();
+                    a.left = 3;
+                    a.right = 4;
+                    a.calculate();
+                    int max = a.getResult();
+
+        关于 API 设计
+            好
+        
+    Clean API
+        就是一套好的 API 
+        
+    设计模式
+    Design Patterns
+        什么是？
+            使用固定的语法、摆出固定的代码结构、解决固定的问题
+            下后下前拳
+        
+    重构
+    Refactorings
+        什么是？
+            在不更改 对外功能 和 API 的前提下，修改内部代码结构
+        例子
+            public int max(int a, int b) {
+                if (a > b) {
+                    return a;
+                } else {
+                    return b;
+                }
+            }
+
+            public int max(int a, int b) {
+                return a > b ? a : b;
+            }
+        为什么
+            A 写好的代码里的 public 的资源，可能会被 B 调用
+            A B 可能是 模块、框架、应用程序、系统
+            希望让 A 的代码的结构变好时，你不希望给 B 带来负担
+            depricated
+        
+    设计原则/技巧
+        在 设计模式 背后的核心设计原则
+
+设计原则
+    生命化
+        代码案例
+            
+            class A {
+                f() {
+                    B b = new B();
+                    b.g();
+                }
+            }
+        神经元
+            对象是一个神经元
+            对象函数里调用另外一个函数 就是神经元激活另外一个神经元
+            如果程序里没有多线程，那么只会有一个神经元处于激活状态
+
+            希望同时有多个神经元在运转 -> 多线程
+        拟人
+            对象是生物
+            方法调用 就是 传递消息（说话）
+            
+    模块化和服务
+        问题 
+            电脑组装的故事
+                我们希望如果电池坏了，不用把电脑都扔了，可以只换电池
+                为什么要拆
+            毛线团的故事
+                代码不能都堆在一起
+                好的代码，是要把毛线团尽可能的清晰的拆开
+                怎么拆
+        API 分割
+        
+            每当定义一个函数 / 属性时，
+            使用方 调用函数的人 / 使用属性的人
+            实现方 实现函数的人 / 保存属性的人
+
+            public int max(int a, int b) { // 这一行
+            }
+
+            电源标准和供电的故事
+                订好三个眼后，供电系统和电器就可以分开行动
+            如果不按规矩来。。。
+                你的实现代码，别人可能并不会按照你的预期去调用
+                1.  写文档声明
+                2.  做一些basic的容错处理
+                3.  如果使用方因为不满足规则，导致实现方的代码出现错误，
+                    实现方不背锅 
+            
+            为使用方服务
+            Comsumer First
+            
+            （坏味道）
+            bad smell
+            
+
+        API 声明
+            简单 
+                直接
+                    Burger b = Burger.newBurgerInDefaultWorld(new Place()); // ok
+
+                    World w = new World();
+                    Place p = w.createPlace();
+                    Factory f = new Factory();
+                    f.setOn(p);
+                    f.supplyPower();
+                    f.makeProduct();
+                    Product product = f.generatedProduct;
+                    Burger b = (Burger)product;
+                    ->如果下面的代码只出现一次，则比上面好
+
+                参数正合适
+                    Math.max(int a, int b)
+                    
+                    Math.max(
+                        int a, int b, 
+                        int defaultForA, int defaultForB, 
+                        boolean isRandomEnabled
+                    )
+            可实现
+                有足够的信息
+                    Math.max(int a, int b)
+                    
+                    Math.max(int a)
+
+            无歧义 
+                变量名可读
+                    n_stu
+                    
+                方法名可读
+                    Math.max(3, 4);
+                
+                    ma(3, 4);
+
+
+                参数名称可读
+                    devide(int number, int by)
+
+                    devide(int n1, int n2)
+
+            重用
+                开放
+                尽力容纳各种可能
+                    Node
+                    +   value:Object
+                    ->可接受任何类型
+
+                    Node 
+                    +   value:int
+
+        实现代码
+            一个方法只干一件事
+                Math.max(int a, int b)
+                
+                Math.max(
+                    int a, int b, 
+                    int defaultForA, int defaultForB, 
+                    boolean isRandomEnabled
+                )
+            
+            
+            一个类只干一类事
+                
+                Math
+                +   max(a:int, b:int) -> int
+                +   min(a:int, b:int) -> int
+
+                ArrayGenerator
+                +   generate(from:int, to:int, size:int) -> int[]
+                +   zero(size:int) -> int[]
+
+                vs
+
+                Math
+                +   max(a:int, b:int) -> int
+                +   min(a:int, b:int) -> int
+                +   generate(from:int, to:int, size:int) -> int[]
+                +   zero(size:int) -> int[]
+
+            一段核心代码只出现在一个位置
+                
+                distanceTo(int x, int y)  {
+                    dx = x - this.x;
+                    dy = x - this.dy;
+                    return (dx ^ 2 + dy ^ 2).sqrt
+                }
+
+                distanceToOrigin()  {
+                    return distanceTo(0, 0);
+                }
+
+                vs
+
+                distanceTo(int x, int y)  {
+                    dx = x - this.x;
+                    dy = x - this.dy;
+                    return (dx ^ 2 + dy ^ 2).sqrt
+                }
+
+                distanceToOrigin()  {
+                    return (x ^ 2 + y ^ 2).sqrt
+                }
+        
+    名词
+        耦合 Coupling
+            越低越好
+            在不同的模块内，元素跨模块间的关联度
+
+            太高 -> 不该拆开的，拆开了
+            
+        内聚 Cohesion
+            越高越好
+            在同一个模块内，元素之间的关联度
+
+            太低 -> 该拆开的，没拆
+            
+        ~connection： 方法间的connection  相互调用关系，或者逻辑间的关联（max/min）
+        8个函数放两个类里
+        
+
+设计表达
+    文本
+        class
+        Node
+        +   previousNode: Node
+        +   nextNode: Node
+        -   value: int +set +get 
+        +   newNode(): Node sta
+        
+    UML
+        名词
+            Unified Modeling Language
+            统一建模语言
+        什么是
+            一套 用来描述程序设计 的图 的标准
+        
+        现状
+            个人评价
+                太丑
+                没用
+            但是：
+                现在还活着
+                大家都在用
+                
+        ～可先写几个属性声明，几个关联方法；再写几个属性声明，和关联方法，中间分隔开，加注释，表示一个class中本应该分开但暂时没有分
+        ～应该按逻辑排序
+       
+
+        有哪些
+            Class Diagram
+            Sequence Diagram
+
+    方法调用结构图
+        用来
+            描述 某个方法在执行时 牵扯到的类之间的调用和多态关系
+            
+        A{
+          f(){
+            B b;
+            b.g()
+            }
+        } 
+        
+        如果是接口类型，
+        A里用的是i的代码，不是B的代码，A里紧密相关的是i
+        
+
+Share
+    如何共享对象资源
+
+单例模式
+Singleton //创建对象唯一且共享
+    问题
+        在一个程序里，有很多的类和很多的对象
+        其中 它们都有可能希望用到 同一个 对象
+
+    实际场景
+        1.  一个游戏里，几乎所有的类和对象，都可能需要访问 当前玩家
+        2.  一个程序，几乎所有的类和对象，都可能需要访问，当前程序的设置
+
+    思路讨论
+        static
+        Cla.method();
+        
+        Asset
+        
+
+        X
+        +   asset: Asset sta = new Asset();
+
+    解决方案
+        1   Asset
+        2   -   sta asset: Asset  //私有静态属性，不让别人赋值或置空   Asset = new Asset();
+        3   -   () //私有的constructor，只有类里能访问，别人无法新建，保证数量为一个
+        4   +   sta getAsset(): Asset //公开静态的getter
+
+        分析
+            核心代码
+                281 是最核心的代码，因为 static
+
+            1 Asset
+                Asset.getAsset()
+                Program.getAsset()
+
+                Setting.getSetting(); // ok
+                Game.getCurrentPlayer(); // ok
+
+            2 +
+                +
+                    Asset.asset = // ok
+                    哪段代码都可以直接修改这个共享的对象变量
+                    Asset.asset = null;
+                    适用于 Player 案例
+                -
+                    Asset.asset = // error
+                    共享的对象，别人不要乱改
+                    Setting setting = Setting.getSetting();
+                    setting.autoOpen = true;
+
+            2 asset
+                Asset
+                +   sta sharedInstance: Asset
+
+                Game
+                +   sta currentPlayer: Player
+
+                Asset
+                +   sta mainAsset: Asset
+                
+            3   +
+                +
+                    任何其它代码都可以直接创建 Asset 对象
+                -
+                    只有 当前类 可以创建 Asset 对象
+            
+            4   ?
+                如果 2 + -> 4 可以删掉
+                如果 2 - -> 4 必须得有
+            
+            4   getAsset()
+                Game.currentPlayer();
+                Asset.main();
+
+            2 3 4 -
+                所有的 Asset 对象 分享一个 Asset 对象
+
+    考察特性
+        如果一个对象是单例的
+        那么这个对象里的属性，也可以视为单例
+       Game 
+        +   sta player: Player（1） 
+            +   weapon: Weapon
+            
+    ～只要对象单例，它的属性也单例了，若bcd想单例，建立一个单例的a，让bcd变成a的属性，则bcd也变成单例了
+
+
+    
+    作业
+    Object Pool
+    对象池
+        问题
+            在一个程序里，有很多的类和很多的对象
+            其中 它们都有可能希望用到 一个类型的 对象     
+            但 不希望 重复创建，而且他们使用这个对象的时间 都很短暂
+            所以希望 能够 有一个共享的对象池
+
+        场景
+            线程池
+            资源池
+            链接池
