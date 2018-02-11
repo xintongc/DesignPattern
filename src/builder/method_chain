@@ -1,0 +1,38 @@
+Method Chain
+方法链
+    干吗用
+        list.stream()
+            .map()
+            .map()
+            .fileter()
+            .......
+    如何实现
+        方法所在的类，就是这个方法的返回值类型
+
+        Fraction
+        +   add(f: Fraction):
+        +   add(f: Fraction): Fraction
+            Fra res = new Fra
+            res.v = this.v + f.v
+            return res;
+
+        +   sub(f: Fraction): Fraction
+
+            rainPercentage.add(f2);
+            rainPercentage.add(f3);
+            rainPercentage.add(f4);
+
+
+            f3 = f1.add(f2).add(f2).add(f4);
+
+            finalPercentage = rainPercentage
+                .add(cloudProp)
+                .sub(snowProp)
+
+            C#/VB
+            with(rainPercentage)
+                .add()
+                .add()
+
+
+        view.getFrame(): Rect.getOrigin():Point.getX():int

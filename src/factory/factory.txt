@@ -1,0 +1,111 @@
+    Factory (Simple 1)
+        问题：
+            一个对象的创建的设置非常繁琐。
+
+        案例：     //创造的被一个player的初始设定都是一样的，但是不能改constructor
+            Player player = new Player();
+            player.balance = 1000;
+            player.setWeapon(new Weapon(100, 200));
+            player.setShield(new Weapon(100, 200));
+            ...10
+
+
+        方案:
+            Player      //设立一个newPlayer的方法用于建造player
+            + sta newPlayer(): Player
+
+
+            Player.newPlayer();
+
+    Factory (Simple 2)
+            PlayerFactory
+            + sta newPlayer(): Player
+                PlayerFactory.newPlayer();
+            /or
+            + newPlayer(): Player
+                new PlayerFactory().newPlayer();
+
+    Factory (Polymorphism)
+            PlayerFactory
+            + sta newPlayer(): Player
+                Player p = PlayerFactory.newPlayer();
+
+            分析：
+                因为你把 new Player 藏起来
+                所以 你可以返回 Player 的子类
+
+                Animal a = AnimalFactory.createAnimal("Dog");
+
+    Factory (Abstract)
+        问题：
+            我需要一系列的对象
+            UILabel
+            UIButton
+            UIView
+
+            但是，突然我又需要另外一系列的对象
+            NSLabel
+            NSButton
+            NSView
+
+            界面上需要
+            label
+            button
+            view
+
+        解决
+            label = new UILabel
+            button = new UIButton
+
+            >
+            factory = new ControlFactory
+            label = factory.newLabel(Config.currentTheme)
+            button = factory.newButton(Config.currentTheme)
+
+            newLabel(theme: String)
+                if theme == "ui"
+                    return ...
+                else
+                    return ..
+
+            问题，如果出现新的主题，你要打开 这个factory，每个方法底下都加一行
+
+            >
+            ControlFactory: interface
+            +   label(): Label
+            +   button(): Button
+
+
+            UIControlFactory: ControlFactory
+            +   label(): UILabel
+            +   button(): UIButton
+
+            NSControlFactory: ControlFactory
+            +   label(): NSLabel
+            +   button(): NSButton
+
+            ZZControlFactory: ControlFactory
+            +   label(): ZZLabel
+            +   button(): ZZButton
+
+            factory = ControlFactory.newFactory("ui")
+            label = factory.label();
+
+
+    what is the factory pattern?
+
+    When a method returns one of several possible classes that share a common super class
+
+    Create a new enemy in a game
+    Random number generator picks a number assigned to a specific enemy
+    The factory returns the enemy associated with that number
+    The class is chosen at run time
+
+    When to use a factory pattern?
+
+    When you don't know ahead of time what class object you need
+    When all of the potential classes are in the same subclass hierachy
+    To centralize class selection code
+    When you don't want the user to have to know every subclass
+    To encapsulate object creation
+

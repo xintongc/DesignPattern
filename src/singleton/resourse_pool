@@ -1,0 +1,42 @@
+Asset
+
+-sta freeAssets: List<Asset>
+-sta usedAsset: List<Asset>
++ sta get( ): Asset
++ sta release(asset: Asset)     静态，传object为参数，使用时：Asset.release(asset) 不好
++ release ( )                   非静态，用object调用，使用时：asset.release( ) 好
+
++sta isAvailable():Boolean      //定长资源池
+
+
+时间复杂度：
+双List情况：
+-sta freeAssets: List<Asset>    //用时：sizeof（）无须便利
+-sta usedAsset: List<Asset>     //还时需遍历
+freeAsset.removeLast( );
+
+单List情况；
+-sta assetPool: List<Asset>
+-free: Boolean                 //用时需要遍历，还时不需遍历
+-usedCount: int
+
+
+sta assets: ArrayList<T>
+Java 所有范型共享一个static, 类型擦除
+C++  范型每种有一个static
+
+
+为了重复使用资源，需要把用完了的资源还回去：
+iPad.returnIPad(id: int)
+iPad.returnIPad(iPad: IPad )
+
+
+使用：
+iPad.returnIPad(iPad.id);
+iPad.returnIPad(iPad: IPad );
+
+如何看iPad有没有被借出：
+如果借出去就删掉，则不需要leftNumber，否则不知道应该借出哪一个iPad
+
+如果设 iPad.lease 的属性判断有没有被借出，会有安全问题
+设两个list，一个存借了的，一个存没借的

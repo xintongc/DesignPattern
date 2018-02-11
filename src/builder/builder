@@ -1,0 +1,164 @@
+    Builder
+        问题
+            一个对象的创建的设置非常繁琐。
+        案例
+
+            - value: int   +get +set
+
+            Range: Iterable<Int>
+            [0, 3]
+            [0, 3)
+            (0, 3]
+            (0, 3)
+            ->
+            <-
+            step
+            1 2 3 4 。。。。
+            [0, 10)
+            0, 2, 4, 6, 8
+            9, 7, 5, 3, 1
+
+            RangeEdge       //把下面3个相关的提取出来形成一个单独的类
+            - value: int
+            - set: boolean
+            - include: boolean
+
+            Range
+            - from: int  +get +set              0
+            - to: int    +get +set              0
+            - setFrom: boolean                  false
+            - setTo: boolean                    false
+            - includeFrom: boolean  +get +set   true
+            - includeTo: boolean    +get +set   true
+            - step: int +get +set               1
+            - reverse: boolean +get +set        false
+            + iterator(): Iterator<Integer>
+
+            [1, 3)
+
+            Range range = new Range();
+            range.setFrom(1);
+            range.setTo(3)
+            range.setIncludeTo(false);
+
+            1.  如果把 setFrom... 返回值改成 Range
+                会破坏 标准 Set Get 的格式
+
+            2.  实现角度来讲
+                所有的属性都很重要
+
+            3.  使用角度来讲
+                range.setRange(1, 3)
+                range.setOpenLeft(1, 3)
+                range.includeTo(3);
+                range.excludeTo(3);
+
+        解决方案
+            1.
+                Range
+                - from: Int
+                - to: Int
+                - fromIncluded: Bool
+                - toIncluded: Bool
+                - step: int
+                - reverse: Bool
+                + iterator(): Iterator<Int>
+                + in(value): Boolean
+
+
+                + includeTo(value: int): Range
+                + excludeTo(value: int): Range
+                + includeFrom(value: int): Range
+                + excludeFrom(value: int): Range
+                    return this;
+
+                + step(value: int): Range
+                + reverse(): Range
+
+                //
+                Range r = new Range ();
+                r.includeFrom(1).excludeTo(3);
+
+                r.includeFrom(1);
+                [1, +infinity
+
+                r.includeTo(3);
+                -ift, 1];
+
+                r.includeFrom(3)
+                    .includeTo(10)
+                    .step(2)
+                    .reverse();
+
+        问题
+            一个对象的创建的设置非常繁琐。
+            有不同的资源需要设置。
+            设置之间有关联，可以简化
+
+        定义
+            Method Chain + 定制的 Setter -> Builder
+
+        解决方案2
+
+                Range
+                - from: Int
+                - to: Int
+                - fromIncluded: Bool
+                - toIncluded: Bool
+                - step: int
+                - reverse: Bool
+                + iterator(): Iterator<Int>
+                + in(value): Boolean
+                + reverse();
+
+
+                RangeBuilder
+                - range: Range = new Range();
+                + includeTo(value: int): RangeBuilder
+                    range.to = value;
+                    range.toIncluded = true;
+                    return this;
+                + excludeTo(value: int): RangeBuilder
+                + includeFrom(value: int): RangeBuilder
+                + excludeFrom(value: int): RangeBuilder
+                + step(value: int): RangeBuilder
+                + reverse(): RangeBuilder
+                + build(): Range
+
+                Range.Builder rb = new Range.Builder();
+                Range range = rb.includeFrom(3)
+                    .includeTo(10)
+                    .step(2)
+                    .reverse()
+                    .build();
+
+
+                Range
+                +   sta builder(): RangeBuilder
+                    return new RangeBuilder();
+
+                Range r = Range.builder()
+                    .includeFrom(3)
+                    .includeTo(10)
+                    .step(2)
+                    .reverse()
+                    .build();
+
+            对比
+                Point
+                 x y
+                Range
+                    属性很多 自由组合
+                    所以 不能够提供一个 universal 的构造方法
+                    new Range(0, 3, true, false, 1, false);
+
+            优点
+                1. 有chain特效
+                2. 能提供自定义的setter
+
+
+
+    point 不需要builder ，必须有x，y，不然不是point
+
+    需要builder：
+    属性很多 能自由组合
