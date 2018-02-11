@@ -1,0 +1,913 @@
+认知
+    目的
+        设计模式 / 重构
+        如何写出好的代码?
+            1.  用更少的代码 写出 同样内容
+            2.  提高代码的重用性
+                减少代码改变量
+            对比
+                1.
+                    int a = ma(3, 4);
+                
+                2.
+                    int a = Math.max(3, 4);
+
+                3.  
+                    Addition a = new Addition();
+                    a.left = 3;
+                    a.right = 4;
+                    a.calculate();
+                    int max = a.getResult();
+
+        关于 API 设计
+            好
+        
+    Clean API
+        就是一套好的 API 
+        
+    设计模式
+    Design Patterns
+        什么是？
+            使用固定的语法、摆出固定的代码结构、解决固定的问题
+            下后下前拳
+        
+    重构
+    Refactorings
+        什么是？
+            在不更改 对外功能 和 API 的前提下，修改内部代码结构
+        例子
+            public int max(int a, int b) {
+                if (a > b) {
+                    return a;
+                } else {
+                    return b;
+                }
+            }
+
+            public int max(int a, int b) {
+                return a > b ? a : b;
+            }
+        为什么
+            A 写好的代码里的 public 的资源，可能会被 B 调用
+            A B 可能是 模块、框架、应用程序、系统
+            希望让 A 的代码的结构变好时，你不希望给 B 带来负担
+            depricated
+        
+    设计原则/技巧
+        在 设计模式 背后的核心设计原则
+
+设计原则
+    生命化
+        代码案例
+            
+            class A {
+                f() {
+                    B b = new B();
+                    b.g();
+                }
+            }
+        神经元
+            对象是一个神经元
+            对象函数里调用另外一个函数 就是神经元激活另外一个神经元
+            如果程序里没有多线程，那么只会有一个神经元处于激活状态
+
+            希望同时有多个神经元在运转 -> 多线程
+        拟人
+            对象是生物
+            方法调用 就是 传递消息（说话）
+            
+    模块化和服务
+        问题 
+            电脑组装的故事
+                我们希望如果电池坏了，不用把电脑都扔了，可以只换电池
+                为什么要拆
+            毛线团的故事
+                代码不能都堆在一起
+                好的代码，是要把毛线团尽可能的清晰的拆开
+                怎么拆
+        API 分割
+        
+            每当定义一个函数 / 属性时，
+            使用方 调用函数的人 / 使用属性的人
+            实现方 实现函数的人 / 保存属性的人
+
+            public int max(int a, int b) { // 这一行
+            }
+
+            电源标准和供电的故事
+                订好三个眼后，供电系统和电器就可以分开行动
+            如果不按规矩来。。。
+                你的实现代码，别人可能并不会按照你的预期去调用
+                1.  写文档声明
+                2.  做一些basic的容错处理
+                3.  如果使用方因为不满足规则，导致实现方的代码出现错误，
+                    实现方不背锅 
+            
+            为使用方服务
+            Comsumer First
+
+    (坏味道)
+    Bad Smell
+
+        API 声明
+            简单 
+                直接
+                    Burger b = Burger.newBurgerInDefaultWorld(new Place()); // ok
+
+                    World w = new World();
+                    Place p = w.createPlace();
+                    Factory f = new Factory();
+                    f.setOn(p);
+                    f.supplyPower();
+                    f.makeProduct();
+                    Product product = f.generatedProduct;
+                    Burger b = (Burger)product;
+
+                参数正合适
+                    Math.max(int a, int b)
+                    
+                    Math.max(
+                        int a, int b, 
+                        int defaultForA, int defaultForB, 
+                        boolean isRandomEnabled
+                    )
+            可实现
+                有足够的信息
+                    Math.max(int a, int b)
+                    
+                    Math.max(int a)
+
+            无歧义 
+                变量名可读
+                    n_stu
+                    
+                    
+                方法名可读
+                    Math.max(3, 4);
+                
+                    ma(3, 4);
+
+
+                参数名称可读
+                    devide(int number, int by)
+
+                    devide(int n1, int n2)
+
+            重用
+                开放
+                尽力容纳各种可能
+                    Node
+                    +   value:Object
+
+                    Node 
+                    +   value:int
+
+        实现代码
+            一个方法只干一件事
+                Math.max(int a, int b)
+                
+                Math.max(
+                    int a, int b, 
+                    int defaultForA, int defaultForB, 
+                    boolean isRandomEnabled
+                )
+            
+            
+            一个类只干一类事
+                
+                Math
+                +   max(a:int, b:int) -> int
+                +   min(a:int, b:int) -> int
+
+                ArrayGenerator
+                +   generate(from:int, to:int, size:int) -> int[]
+                +   zero(size:int) -> int[]
+
+                vs
+
+                Math
+                +   max(a:int, b:int) -> int
+                +   min(a:int, b:int) -> int
+                +   generate(from:int, to:int, size:int) -> int[]
+                +   zero(size:int) -> int[]
+
+            一段核心代码只出现在一个位置
+                
+                distanceTo(int x, int y)  {
+                    dx = x - this.x;
+                    dy = x - this.dy;
+                    return (dx ^ 2 + dy ^ 2).sqrt
+                }
+
+                distanceToOrigin()  {
+                    return distanceTo(0, 0);
+                }
+
+                vs
+
+                distanceTo(int x, int y)  {
+                    dx = x - this.x;
+                    dy = x - this.dy;
+                    return (dx ^ 2 + dy ^ 2).sqrt
+                }
+
+                distanceToOrigin()  {
+                    return (x ^ 2 + y ^ 2).sqrt
+                }
+        
+    名词
+        耦合 Coupling
+            越低越好
+            在不同的模块内，元素跨模块间的关联度
+
+            太高 -> 不该拆开的，拆开了
+            
+        内聚 Cohesion
+            越高越好
+            在同一个模块内，元素之间的关联度
+
+            太低 -> 该拆开的，没拆
+
+设计表达
+    文本
+        class
+        Node
+        +   previousNode: Node
+        +   nextNode: Node
+        -   value: int +set +get 
+        +   newNode(): Node sta
+        
+    UML
+        名词
+            Unified Modeling Language
+            统一建模语言
+        什么是
+            一套 用来描述程序设计 的图 的标准
+        
+        现状
+            个人评价
+                太丑
+                没用
+            但是：
+                现在还活着
+                大家都在用
+
+        有哪些
+            Class Diagram
+            Sequence Diagram
+
+    方法调用结构图
+        用来
+            描述 某个方法在执行时 牵扯到的类之间的调用和多态关系
+
+Share
+    如何共享对象资源
+
+单例模式
+Singleton
+    问题
+        在一个程序里，有很多的类和很多的对象
+        其中 它们都有可能希望用到 同一个 对象
+
+    实际场景
+        1.  一个游戏里，几乎所有的类和对象，都可能需要访问 当前玩家
+        2.  一个程序，几乎所有的类和对象，都可能需要访问，当前程序的设置
+
+    Player 
+    
+
+    Game 
+    () {
+        Player player1 = new Player();
+        
+    }  
+
+    Xxxx 
+    () {
+        player1.getHp();
+    }
+
+    f() {
+        return hp;
+    }
+
+    static 
+    Math.PI 
+
+    Game
+    +   player: Player sta
+    () {
+        player = new Player();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    思路讨论
+        static
+        Cla.method();
+        
+        Asset
+        
+        //
+        alloc static property 
+        static int a = 3; static property inline assign 
+        static {
+            
+        }
+
+        new ()
+        alloc property 
+        int a = 3; instance property inline assign
+        {}
+        call ()
+    
+        call f();
+
+
+        public class Player {
+            public Player() {
+    
+            }
+            {
+                sout(..)
+            }
+            static {
+
+            }
+        }
+        X
+        +   asset: Asset sta = new Asset();
+
+    解决方案
+        1   Asset
+        2   -   sta asset: Asset = new Asset();
+        3   -   ()
+        4   +   sta getAsset(): Asset
+
+        分析
+            核心代码
+                2 是最核心的代码，因为 static
+
+            1 Asset
+                Asset.getAsset()
+                Program.getAsset()
+
+                Setting.getSetting(); // ok
+                Game.getCurrentPlayer(); // ok
+
+            2 +
+                +
+                    Asset.asset = // ok
+                    哪段代码都可以直接修改这个共享的对象变量
+                    Asset.asset = null;
+                    适用于 Player 案例
+                -
+                    Asset.asset = // error
+                    共享的对象，别人不要乱改
+                    Setting setting = Setting.getSetting();
+                    setting.autoOpen = true;
+
+            2 asset
+                Asset
+                +   sta sharedInstance: Asset
+
+                Game
+                +   sta currentPlayer: Player
+
+                Asset
+                +   sta mainAsset: Asset
+                
+            3   +
+                +
+                    任何其它代码都可以直接创建 Asset 对象
+                -
+                    只有 当前类 可以创建 Asset 对象
+            
+            4   ?
+                如果 2 + -> 4 可以删掉
+                如果 2 - -> 4 必须得有
+            
+            4   getAsset()
+                Game.currentPlayer();
+                Asset.main();
+
+            2 3 4 -
+                所有的 Asset 对象 分享一个 Asset 对象
+
+    考察特性
+        如果一个对象是单例的
+        那么这个对象里的属性，也可以视为单例的
+        Game
+        +   sta player: Player (1)
+            +   weapon: Weapon
+
+    
+    作业
+    Object Pool
+    对象池
+        问题
+            在一个程序里，有很多的类和很多的对象
+            其中 它们都有可能希望用到 一个类型的 对象     
+            但 不希望 重复创建，而且他们使用这个对象的时间 都很短暂
+            所以希望 能够 有一个共享的对象池
+
+        场景
+            线程池
+            资源池
+            链接池
+
+        
+    收集：
+        1
+            ResourcePool<T>
+            - sta assets: ArrayList<T>
+            - ()
+            + sta getAsset(): Asset
+            - void expandAsset()
+        
+        3
+            IPad.returnIPad(id:int)
+            IPad.returnIPad(iPad:IPad)
+
+
+            IPad.returnIPad(iPad.id);
+            IPad.returnIPad(iPad)
+
+
+            - sta iPads: List<IPad>
+            - sta iPads: List<IPad>
+            - sta leftNumber: int
+            + getIPad(): IPad
+            + returnIPad()
+            + isAvailable(): boolean
+            + createAndGetIpad(): IPad
+
+                            
+        2
+            public class ObjectPool {
+                private static Object obj;
+                private ObjectPool()
+                {
+                    // 
+                }
+                public static Object getObj()
+                {
+                    if (obj == null)
+                    {
+                        obj = new ObjectPool();
+                    }
+                    return obj;
+                }
+            }
+
+        Asset
+        -   sta freeAssets: List<Asset>
+        -   sta usedAssets: List<Asset>
+
+        +   sta get(): Asset 
+        +   sta release(asset: Asset)
+        +   release()
+
+        +   sta isAvailable(): Boolean 
+
+            // Asset.release(asset)
+            // asset.release();
+
+        -   sta freeAssets: List<Asset>
+        -   sta usedAssets: List<Asset>
+            freeAssets.removeLast();
+        
+        -   sta assets: List<Asset>
+        -   free: Boolean 
+        -   usedCount: int 
+
+
+Method Chain
+方法链
+    干吗用
+        list.stream()
+            .map()
+            .map()
+            .fileter()
+            .......
+    如何实现
+        方法所在的类，就是这个方法的返回值类型
+        
+        Fraction
+        +   add(f: Fraction): 
+        +   add(f: Fraction): Fraction
+            Fra res = new Fra 
+            res.v = this.v + f.v
+            return res;
+            
+        +   sub(f: Fraction): Fraction
+    
+            rainPercentage.add(f2);
+            rainPercentage.add(f3);
+            rainPercentage.add(f4);
+
+
+            f3 = f1.add(f2).add(f2).add(f4);
+
+            finalPercentage = rainPercentage
+                .add(cloudProp)
+                .sub(snowProp)
+
+            C#/VB
+            with(rainPercentage)
+                .add()
+                .add()
+
+
+        view.getFrame(): Rect.getOrigin():Point.getX():int
+
+
+
+    Builder 
+        问题
+            一个对象的创建的设置非常繁琐。
+        案例
+
+            - value: int   +get +set 
+
+            Range: Iterable<Int>
+            [0, 3]
+            [0, 3)
+            (0, 3]
+            (0, 3)
+            -> 
+            <-
+            step 
+            1 2 3 4 。。。。
+            [0, 10) 
+            0, 2, 4, 6, 8
+            9, 7, 5, 3, 1
+
+
+            - step : int +get +set
+            + includeNone(int a, int b) -> int[]
+            + includeLeft(int a, int b) -> int[]
+            + includeRight(int a, int b) -> int[]
+            + includeBoth(int a, int b) -> int[]
+            + flip(int[] array) -> int[]
+
+
+            Add Comment
+
+            - from:int  +get +set
+            - to: int   +get +set
+            - includeFrom: boolean  +get +set
+            - includeTo: boolean    +get +set
+            + produceList(step:int): int[]
+            + produceReverseList(step:int): int[]
+
+
+            RangeEdge
+            - value: int 
+            - set: boolean 
+            - include: boolean 
+
+            Range 
+            - from: int  +get +set              0
+            - to: int    +get +set              0
+            - setFrom: boolean                  false 
+            - setTo: boolean                    false 
+            - includeFrom: boolean  +get +set   true
+            - includeTo: boolean    +get +set   true
+            - step: int +get +set               1
+            - reverse: boolean +get +set        false
+            + iterator(): Iterator<Integer>
+
+            [1, 3)
+
+            Range range = new Range();
+            range.setFrom(1);
+            range.setTo(3)
+            range.setIncludeTo(false);
+
+            1.  如果把 setFrom... 返回值改成 Range 
+                会破坏 标准 Set Get 的格式
+        
+            2.  实现角度来讲
+                所有的属性都很重要
+
+            3.  使用角度来讲
+                range.setRange(1, 3)
+                range.setOpenLeft(1, 3)
+                range.includeTo(3);
+                range.excludeTo(3);
+
+        解决方案
+            1.  
+                Range
+                - from: Int 
+                - to: Int 
+                - fromIncluded: Bool
+                - toIncluded: Bool 
+                - step: int 
+                - reverse: Bool 
+                + iterator(): Iterator<Int>
+                + in(value): Boolean 
+            
+
+                + includeTo(value: int): Range 
+                + excludeTo(value: int): Range
+                + includeFrom(value: int): Range 
+                + excludeFrom(value: int): Range 
+                    return this;
+
+                + step(value: int): Range 
+                + reverse(): Range 
+
+                // 
+                Range r = new Range ();
+                r.includeFrom(1).excludeTo(3);
+
+                r.includeFrom(1);
+                [1, +infinity
+
+                r.includeTo(3);
+                -ift, 1];
+
+                r.includeFrom(3)
+                    .includeTo(10)
+                    .step(2)
+                    .reverse();
+            
+        问题
+            一个对象的创建的设置非常繁琐。
+            有不同的资源需要设置。
+            设置之间有关联，可以简化
+        
+        定义
+            Method Chain + 定制的 Setter -> Builder 
+
+        解决方案2
+            
+                Range
+                - from: Int 
+                - to: Int 
+                - fromIncluded: Bool
+                - toIncluded: Bool 
+                - step: int 
+                - reverse: Bool 
+                + iterator(): Iterator<Int>
+                + in(value): Boolean 
+                + reverse();
+        
+    
+                RangeBuilder 
+                - range: Range = new Range();
+                + includeTo(value: int): RangeBuilder 
+                    range.to = value;
+                    range.toIncluded = true;
+                    return this;
+                + excludeTo(value: int): RangeBuilder
+                + includeFrom(value: int): RangeBuilder 
+                + excludeFrom(value: int): RangeBuilder
+                + step(value: int): RangeBuilder 
+                + reverse(): RangeBuilder 
+                + build(): Range 
+    
+                Range.Builder rb = new Range.Builder();
+                Range range = rb.includeFrom(3)
+                    .includeTo(10)
+                    .step(2)
+                    .reverse()
+                    .build();
+
+
+                Range 
+                +   sta builder(): RangeBuilder
+                    return new RangeBuilder();
+
+                Range r = Range.builder()
+                    .includeFrom(3)
+                    .includeTo(10)
+                    .step(2)
+                    .reverse()
+                    .build();
+                
+            对比
+                Point 
+                 x y
+                Range
+                    属性很多 自由组合 
+                    所以 不能够提供一个 universal 的构造方法
+                    new Range(0, 3, true, false, 1, false);
+
+            优点
+                1. 有chain特效
+                2. 能提供自定义的setter
+
+
+    Factory (Simple 1)
+        问题：
+            一个对象的创建的设置非常繁琐。
+
+        案例：
+            Player player = new Player();
+            player.balance = 1000;
+            player.setWeapon(new Weapon(100, 200));
+            player.setShield(new Weapon(100, 200));
+            ...10
+
+
+        方案:
+            Player
+            + sta newPlayer(): Player   
+                
+
+            Player.newPlayer();
+    
+    Factory (Simple 2)
+            PlayerFactory
+            + sta newPlayer(): Player 
+                PlayerFactory.newPlayer();
+            /or 
+            + newPlayer(): Player 
+                new PlayerFactory().newPlayer();
+
+    Factory (Polymorphism)
+            PlayerFactory
+            + sta newPlayer(): Player 
+                Player p = PlayerFactory.newPlayer();
+
+            分析：
+                因为你把 new Player 藏起来
+                所以 你可以返回 Player 的子类
+
+                Animal a = AnimalFactory.createAnimal("Dog");
+
+    Factory (Abstract)
+        问题：
+            我需要一系列的对象
+            UILabel 
+            UIButton
+            UIView 
+    
+            但是，突然我又需要另外一系列的对象
+            NSLabel 
+            NSButton
+            NSView 
+            
+            界面上需要
+            label 
+            button
+            view 
+
+        解决
+            label = new UILabel
+            button = new UIButton
+        
+            >
+            factory = new ControlFactory
+            label = factory.newLabel(Config.currentTheme)
+            button = factory.newButton(Config.currentTheme)
+
+            newLabel(theme: String)
+                if theme == "ui"
+                    return ...
+                else 
+                    return ..
+
+            问题，如果出现新的主题，你要打开 这个factory，每个方法底下都加一行
+
+            >
+            ControlFactory: interface
+            +   label(): Label 
+            +   button(): Button 
+            
+
+            UIControlFactory: ControlFactory
+            +   label(): UILabel 
+            +   button(): UIButton 
+            
+            NSControlFactory: ControlFactory
+            +   label(): NSLabel 
+            +   button(): NSButton
+
+            ZZControlFactory: ControlFactory
+            +   label(): ZZLabel 
+            +   button(): ZZButton
+
+            factory = ControlFactory.newFactory("ui")
+            label = factory.label();
+        
+                
+
+
+
+
+
+    额外讨论
+            static 
+            1.  static 的资源 用 类名引导
+                Xxxxxx.xxxx();
+            2.  使用 static 的资源时，不需要宿主的对象
+
+            Game
+            + sta p1: Player 
+            + p2: Player 
+
+            Player  
+            + hp: int 
+
+            hp 
+            Player 对象
+            Player 变量 
+            p1 / p2
+            p1 < Game sta , Game.p1 
+            p2 < Game, Game 对象 , game.p1 
+
+            ...
+
+        有一个游戏
+        Game
+        有 5 个玩家
+    
+        Game
+        +  sta current(): Game
+        +  players: [Player]
+
+    作业：
+        1. Builder 
+        2.  
+            Game 
+            +   players:[Player]
+        
+            Player
+            +   location: Point 
+
+
+            Xxxx 
+            +   attack()
+                // 根据职业不同有多态
+                iter(players){
+                    players.location.distanceTo(location) < 2
+                }
+                one = xxx[0];
+                one.hp -= 10;
+
+            Xxxx 
+            +   location: Point 
+            +   attack()
+                iter(players){
+                    players.location.distanceTo(location) < 2
+                }
+                iter(player) {
+                    .hp -= 10;
+                }
+            
+                // 根据职业不同有多态
+
+            1. 要获取攻打目标
+    
+        请你设计一些结构
+            帮助 在写 attack 方法的时候，能很方便的快速找到攻打目标
+
+        
+
+        
+            
+            
+    
+        
+
+
+
+
+
+            
+            
+            
+
+            
+
+            
+
+    
+
+
+
+
+                
+
+        
+
+    
+
+    
+
