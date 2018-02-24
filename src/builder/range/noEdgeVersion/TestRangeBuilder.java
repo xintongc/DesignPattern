@@ -23,5 +23,8 @@ public class TestRangeBuilder {
 
         System.out.println(range1);
 
+        System.out.println(range1.in(5));
+        System.out.println(range1.in(16));
+
     }
 }

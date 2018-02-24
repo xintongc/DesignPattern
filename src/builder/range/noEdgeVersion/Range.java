@@ -1,6 +1,10 @@
 package builder.range.noEdgeVersion;
 
 
+import com.sun.xml.internal.fastinfoset.stax.events.ReadIterator;
+
+import java.util.Iterator;
+
 public class Range {
 
     private int from;
@@ -24,11 +28,23 @@ public class Range {
     }
 
 
-//    public Iterator<Iterator> iterator(){};
-//    public boolean in(int value){
+//    public Iterator<Iterator> iterator(){
+//        return new RangeIterator();
+//    };
 
-//
-//    }
+    public boolean in(int value){
+        if(value > from && value < to){
+            return true;
+        }
+        if (value == from && fromIncluded){
+            return true;
+        }
+        if (value == to && toIncluded){
+            return true;
+        }
+        return false;
+    }
+
     public void reverse(){
 
     }
@@ -83,6 +99,9 @@ public class Range {
 
     @Override
     public String toString() {
-        return "From " + from + " to " + to;
+        String string = "";
+        string += (fromIncluded ? "[" : "(") + from + " ";
+        string += to + (toIncluded ? "]" : ")");
+        return string;
     }
 }
