@@ -1,0 +1,74 @@
+        Unit : class
+        +   location: Point
+        +   group: Group
+
+        Group : enum
+        .   Friend
+        .   Enemy
+
+        Point : class
+        +   x: int
+        +   y: int
+
+        Map : class
+        +   units: Unit[][]
+        +   selector(): MapSelector
+            return new MapSelector(units)
+
+        Direction : enum
+        .   Left
+        .   Right
+        .   Top
+        .   Down
+
+        Direction : double alais
+
+        Direction : Point
+        (0, 1), (0, -1)
+
+        MapSelector : class
+        +   units: Unit[]
+
+        //  区域过滤
+        +   inCircle(Point center, int radius) : MapSelector
+        +   inLine(Point origin, Direction direction, int length, int width) : MapSelector
+        +   inRing(Point center, int innerRadius, int outerRadius) : MapSelector
+        +   inCross(Point center, int radius) : MapSelector {
+                units = ....
+                return this;
+            }
+
+        //  阵营过滤
+        +   enemy() : MapSelector
+        +   friend() : MapSelector
+
+        +   sortByHp() : MapSelector
+        +   sortByDistance() : MapSelector
+        +   reverse() : MapSelector
+
+        +   limit(int amount) : Unit[]
+        +   first() : Unit
+        +   all() : Unit[]
+
+        Unit[] units = map.selector()
+            .inCircle(center, 4)
+            .friend()
+            .sortByHp()
+            .limit(3)
+
+
+        // range
+        // self current location
+        // shape
+        // all / limited
+        // units
+
+        +   f(): MapSelector
+
+        MapSelector.inRange()
+        {
+            temp = units;
+            units = .....;
+        }
+
+        // all in range -> friends -> top 3 hp
