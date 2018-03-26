@@ -1,4 +1,4 @@
-package officeStory;
+package officeStory.version1;
 
 public class Office {
     public static void main(String[] args) {

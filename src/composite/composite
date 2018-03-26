@@ -5,3 +5,34 @@ They allow you to represent part-whole hierarchies
     Components can be further divided into smaller components
 
 You can structure data, or represent the inner working of every part of a whole object individually
+
+Composite
+        问题：
+            如何表达树结构
+            文件系统结构
+            界面元素结构
+
+        标准答案
+
+            Node
+            + size()
+
+            Branch : Node
+            +   nodes: [Node]
+            +   size() {
+                for(node : nodes) {
+
+                }
+            }
+            Leaf : Node
+            +   size() {
+                return size;
+            }
+
+            totalAtk() {
+                return this.atk + weapon.atk
+            }
+
+
+            Node
+            +   nodes: [Node]

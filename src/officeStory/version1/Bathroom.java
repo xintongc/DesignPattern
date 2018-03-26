@@ -1,4 +1,4 @@
-package officeStory;
+package officeStory.version1;
 
 public class Bathroom {
 

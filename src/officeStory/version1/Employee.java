@@ -1,4 +1,4 @@
-package officeStory;
+package officeStory.version1;
 
 import static java.lang.Math.random;
 

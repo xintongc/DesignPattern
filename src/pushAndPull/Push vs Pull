@@ -1,0 +1,276 @@
+Push vs Pull
+
+A 把消息传递给 B
+
+
+Push model
+A对B有dependence, (A 里有 B)
+推数据，推过去立即执行
+
+Pull model
+效率高，要多少pull多少，按需去抓
+B对A有dependence, (B 里有 A)
+
+
+消息传递
+    Push vs Pull
+        问题：
+            文件
+            1, 2, 3
+            4, 5, 6
+            7, 8, 9, 10
+
+            1, 2, 3, ....., 10
+
+        消息机制
+            A -M-> B ?
+
+            push
+                A {
+                    f(){
+                        b.open()        //  静态消息，就是函数
+                        b.close()
+                        b.lighter(5)    //  动态消息，变的部分是参数，不变的是函数名
+                    }
+                }
+
+                B
+                +   open(){.....};
+
+                在 open 里面写的代码，就是对 open 的消息的反应
+
+                A 要告诉 B，A 触发的消息传递，用函数名和参数达到c的传递，push model
+
+            pull
+                B 向 A 要?
+
+                B {
+                    f() {
+                        int obj = a.asked();
+                    }
+                }
+
+                A {
+                    asked():int {
+                        return c;
+                    }
+                }
+
+                A 要告诉 B，B 触发的消息，用返回值达到c的传递，pull model
+
+
+
+    Push Model
+
+
+    Pull Model
+
+
+    Message Queue
+
+    消息传递
+        问题
+            我们想把 A 里的一个数据 传送到 B
+
+        可能性
+            A 认识 B， B 认识 A
+            A 认识 B， B 不认识 A
+            A 不认识 B， B 认识 A
+            A 不认识 B， B 不认识 A
+
+        A 认识 B， B 不认识 A
+            push
+
+        A 不认识 B， B 认识 A
+            pull
+
+        A 不认识 B， B 不认识 A
+            1)
+                C 又认识 A, C 又认识 B
+                C {
+                    String message = a.pull();
+                    b.push(message);
+                }
+
+            2)  A 认识 C ， C 认识 B
+                A {
+                    c.push(message);
+                }
+
+                C {
+                    b.push(message);
+                }
+
+                B {
+                    push(message) {
+                        print(message);
+                    }
+                }
+
+            3)  跟A 有关系的 都和 B 没关系
+                A -> C -> D -> E -> B
+                C -> D -> A, C -> E -> B
+
+                S centralized 的 资源
+                A -> S push
+                B <- S pull
+
+            4)  Tunnel
+                跟A 有关系的 都和 B 没关系
+                A -> C -> D -> E -> B
+
+                Context
+
+
+    Delegate 委托 / CallBack 回调
+        问题
+            A 请求 B 做一件事情，
+            但是 B 在做的时候，有些事情无法决定，怎么办？
+        案例
+            扫地故事
+
+        代码：
+            Company {
+                f() {
+                    ...
+                    employee.swipe()
+                    ...
+                }
+            }
+
+            Employee {
+                swipe() {
+                    for () {
+                        item = xxx.next();
+                        if(item ...) {
+                            through(item);
+                        } else if (item ...) {
+                            teller.give(item);
+                        }
+                    }
+                }
+            }
+
+
+        办公室的故事
+
+        //  老板开了一个公司
+        //  公司里 有很多员工
+        //  这些员工，每天，都在喝水
+        //  员工就想上厕所
+        //  老板为了管理员工，决定 员工上厕所之前，都要向老板请示，老板会告诉员工 厕所在哪
+        //  员工 上 厕所
+
+
+        //  老板，公司，员工，厕所
+
+            关系分析：
+            老板 -> 厕所，员工
+            员工 -> 老板
+            公司 -> 老板，员工，厕所
+
+            方法
+                老板
+                +   request(employee: Employee): Bathroom
+
+                员工
+                +   capacity: int
+                +   cups: int
+                +   drink(cups: int)
+
+                厕所
+                +   serve(employee: Employee)
+
+        剧情2
+            老板 在公司里 配置了一个 厕所分发机
+            员工以后需要找 厕所分发机 申请上厕所
+            厕所分发机 会告诉员工 厕所在哪
+            Distributor
+            员工 -> 分发机 (属性)
+            分发机 -> 员工 (方法调用)
+            x 老板 -> 厕所
+            x 员工 -> 老板
+
+            方法
+                分发机
+                +   request(employee: Employee): Bathroom
+
+
+
+
+        总结
+            转接
+                A 在实现 一个方法的时候， 转接调用 b 的一个方法
+                目的：不是为了使用b的方法，而是为了告诉b 一件事情
+                Math.random() vs xxx.request
+
+            转接 -> 轻量级的 委托设计模式
+
+            虚化
+                利用多态，让代码可插拔
+                针对一个类的关系 -> 针对一个接口/抽象类的关系
+
+            转接 + 虚化 -> 标准的 委托设计模式
+                一个类，实现了一部分功能，
+                并且将另外一部分功能 不确定化
+
+            使用原则：
+                使用 带委托的设计模式的类的时候，必须补齐功能
+
+        Callback
+            A -> B -> C Delegation
+            A -> B -> A Callback 回调 / 回调函数
+
+        怎么拿到一个资源
+            属性
+                怎么来的？别人赋值的
+            参数
+                怎么来的？传参
+            局部
+                怎么来？new
+            全局
+                怎么来的? 别人赋值的
+
+
+        怎么样把一个资源 从 A 送到 B
+            刚才那一大堆
+
+
+
+
+Push模式
+source 要把消息交给Que
+Tracer 要消费Que
+
+Source不能new Que，但要把Que交给Tracer，但无法交给Tracer，因为source找不到Tracer
+
+3）A的消息通过c,d,e传到B是，这些东西都产生了dependence，是不想看到的
+
+
+Composite
+
+Delegate
+公司叫员工扫地，公司调用一个方法，方法里拿到员工，员工调用扫地方法
+
+officeStroy
+请求上厕所的method 在老板里，因为员工需要找老板请求上厕所，老板.requested
+
+老板不知道请求的员工是谁，所以需要传employee
+
+employee需要实现一个方法，不需要自己有这个方法，可以用别的类实现这个方法，用interface转接调用
+Delegate中有这个方法，因为员工需要这个方法
+
+调用request是因为员工无法决定，所以委托给boss去决定，用boss.requested（）去实现employee的需求
+
+A ->     B ->     C
+office  employee    boss
+
+回调和委托是一回事
+
+虚化的好处：
+问问题的人不需要知道谁回答你问题
+回答放可以随时改
+
+
+Chain of Responsebility
+tree + delegation

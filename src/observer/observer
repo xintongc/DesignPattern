@@ -1,0 +1,79 @@
+When you need many other objects to receive an update when another object changes
+
+    Stock market with thousands of stocks needs to send updates to objects representing individual stocks
+    The subject (publisher) sends many stocks to the Observers
+    The Observers (substribers) takes the ones they want and use them
+
+
+观察者
+    问题
+        有很多对象都很关心一个对象的事件
+    学术
+        Subject 被观察的
+        Observer 观察别人的
+    需求
+        有一个地方存储hp
+        很多面板都能看到 hp
+
+    规范这个问题
+        a.m
+        b, c, d
+
+    分析？
+        a -> b, c, d
+
+    方案
+        1
+            b, c, d 管 a
+            分析
+                b, c, d 不知道 a 什么时候更新
+                所以，只能不停的问
+            说明
+                Web 服务器怎么样能告诉网页 有个数值产生改变
+                网页不停的发送 http 请求 向服务器获取数据
+        2
+            a push b, c, d
+            方案：
+                b.updated(newValue)
+                c.updated(newValue)
+                d.updated(newValue)
+            问题：
+                1.  重复问题
+                2.  拿不到对象
+                3.  不知道它要不要
+                4.  扩展性不好
+        3
+            a push b, c, d
+            a push observers
+            方案
+                A
+                +   注册 observer
+                +   取消注册 observer
+
+                Observer: interface
+                +   被通知 message
+
+                Subject = A = Employee
+                Observer = EmployeeDelegate
+                B = C = D = BathroomMachine = Boss
+
+                A
+                +   register(observer: Observer)    -> setDelegate(x)
+                +   deregister(observer: Observer)    -> setDelegate(null)
+
+                Observer
+                +   notify(value: int)          -> requestBathroom(): Bathroom
+                                                -> didGotoBathroom()
+
+            结论
+                observer = delegate x n
+                delegate
+                    tell + ask
+                    如果不设置 delegate 可能会出事
+                observer
+                    only tell never ask
+                    如果没有 observer 程序应该正常运转
+
+            单例被观察
+                Game
+                +   player: Player static

@@ -1,6 +1,7 @@
-package officeStory;
+package officeStory.version1;
 
-public class Boss {
+public class Distributor {
+
     private Bathroom bathroom;
 
     public Bathroom getBathroom() {
