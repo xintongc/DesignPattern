@@ -1,4 +1,4 @@
-package adapter;
+package adapter.swing;
 
 public class BasicInterpreter implements Interpreter {
     @Override

@@ -5,3 +5,164 @@ You create an abstract class that contains a method called the Template method
 The template method contains a series of method calls that every subcalss object will call
 
 The subclass ohjects can override some of the method calls
+
+
+Template
+    问题：
+        有很多个类，
+        这些类里，有一个一样的方法 f
+        f 里的代码 特别多
+        但是 f 里代码逻辑顺序是一样的
+
+    案例
+        FishBurger
+        +   create() {
+            burger = new WhiteBread();
+            burger.addSauce(new TarTarSauce());
+            burger.addMeat(new Fish());
+            burger.add(new Pickle());
+            burger.fold();
+        }
+
+        CheeseBurger
+        +   create() {
+            burger = new WhiteBread();
+            burger.addSauce(new TomatoSauce());
+            burger.addMeat(new Beef());
+            burger.add(new Cheese());
+            burger.add(new Pickle());
+            burger.fold();
+        }
+
+        DoubleBurger
+        +   create() {
+            burger = new WhiteBread();
+            burger.addSauce(new TomatoSauce());
+            burger.addMeat(new Beef());
+            burger.addMeat(new Beef());
+            burger.add(new Cheese());
+            burger.add(new Pickle());
+            burger.fold();
+        }
+
+    修改
+        Burger : class
+        +   create() {
+            prepareBread();
+            prepareSauce();
+            prepareMeat();
+            fold();
+        }
+
+        +   prepareBread() abstract
+        +   prepareSauce() abstract
+        +   prepareMeat() abstract
+
+        FishBurger()
+        +   prepareBread() {
+            bread = new WhiteBread();
+        }
+
+        +   prepareSauce() {
+            this.addSauce(new TarTarSauce());
+        }
+
+        +   prepareMeat() {
+            this.addMeat(new Fish());
+            this.addMeat(new Fish());
+        }
+
+        burger = new FishBurger()
+        burger.create();
+
+    规则
+        创建一个父类
+        父类里的方法 a 按照某种顺序调用了 b c d e 方法
+        子类继承父类，不覆盖 a，转而覆盖 b c d e 方法
+    作用
+        父类定义顺序
+        子类提供内容
+
+    名词
+        钩子方法
+        Hook
+
+        生命周期
+        +   iOS
+            UIViewController
+            +   viewWillAppear()
+            +   viewDidAppear()
+            +   viewWillDisappear()
+            +   viewDidDisappear()
+
+
+        +   Spring
+            Xxxxxx
+            +   preConstructor(){
+                //
+            }
+
+        +   swift object
+            Object
+            +   init();
+            +   deinit();
+
+    变体
+        Style 1:
+        Burger
+        +   bread: Bread
+        +   sauces: Sauce[]
+        +   meats: Meat[]
+        +   fold()
+
+        +   () {
+            prepareMeat()
+        }
+
+        +   prepareMeat();
+
+        FishBurger()
+        +   prepareMeat() {
+            meats.add(new Fish());
+        }
+
+        分析:
+            曝光了父类的 meats 属性
+
+        Style 2:
+        Burger
+        +   bread: Bread
+        +   sauces: Sauce[]
+        -   meats: Meat[]
+        +   fold()
+
+        +   () {
+            meats = prepareMeat()
+        }
+
+        +   prepareMeat() : Meat[];
+
+        FishBurger()
+        +   prepareMeat() : Meat[] {
+            meats = [];
+            meats.add(new Fish());
+            return meats;
+        }
+
+        分析:
+            优点：清楚的知道要生成 Meat
+
+
+    My Note:
+    Template 关键在于顺序一样，顺序错了则不对
+    style 1
+    优点：
+        自由
+        方法里可以做别的
+    缺点：
+        别人不知道要干嘛
+
+    style2
+    缺点：
+        不自由
+        例子：安卓菜单，传一个list

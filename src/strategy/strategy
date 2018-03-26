@@ -1,0 +1,62 @@
+问题
+        在一个方法里，有很多代码
+        并且会一开始基于一个状态，做出不同的实现
+
+    案例
+        calculate(v1, v2, ope) {
+            if ope == Ope.Add {
+                return v1 + v2;
+            } else if ope = Ope.Sub {
+                return v1 - v2;
+            }
+        }
+
+        +   mode: Mode // line -> line <-
+
+        draw() {
+            if (mode == left) {
+                //
+                //
+                //
+                //
+            } else if (mode == right) {
+                //
+                //
+                //
+                //
+            }
+        }
+
+    解决方案
+
+        Expression : class
+        +   evaluate(v1: int, v2: int, operatorStr: String ){
+            Operator operator = null;
+            if (operatorStr == "+") {
+                operator = new AddOperator(v1, v2);
+            } else if .. {
+                ...
+            }
+            return operator.evaluate();
+        }
+
+        Operator : class
+        +   v1: int
+        +   v2: int
+        +   evaluate(): int abstract
+
+        AddOperator : Operator
+        +   evaluate(): int {
+            return v1 + v2;
+        }
+
+
+
+Dynamically create whole new different types of flying typed animals
+Use strategy pattern
+1. When you need to use one of several behaviors dynamically
+2. Often reduces long lists of conditions
+3. Avoids duplicate code
+4. Keeps class changes from forcing other class changes
+5. Can hide complicated /  secret code from the user
+

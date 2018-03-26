@@ -1,4 +1,4 @@
-package adapter;
+package adapter.swing;
 
 import javax.swing.*;
 

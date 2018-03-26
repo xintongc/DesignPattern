@@ -1,0 +1,11 @@
+静态内部类
+
+两者没什么关系，把外层类当成包名
+
+无 static： new RangeBuilder( )
+有 static： new Range.Builder( )  //Outside
+new Builder                      //Inside
+
+
+无static内部类
+可用到外部类的属性

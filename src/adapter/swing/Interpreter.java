@@ -1,4 +1,4 @@
-package adapter;
+package adapter.swing;
 
 import java.util.LinkedList;
 import java.util.List;

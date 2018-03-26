@@ -1,0 +1,42 @@
+Provide a class which limit access to another class
+
+You may do this for security reasons, because an Object is intensive to create, or is accessed from
+a remote location
+
+
+
+
+
+Proxy
+    做法：增加中间人
+
+    案例
+        User
+        +   getProfileImage(): Image
+
+        Client 执行的代码
+
+        +   getProfileImage() {
+            return url.get("http://www.zz.com/user/1024/profileImage").data -> Image
+        }
+
+        Windows {
+            imageView.image = user.getProfileImage();
+        }
+
+        问题：
+        每次显示图像的时候，都需要在网上重新获取
+        希望：
+        增加缓存功能
+
+        Xxxx
+        +   getProfileImage() {
+            imagelist
+
+        }
+
+
+    Spring
+        fg() -> UserService
+        UserService service = fg();
+        service.f1();
