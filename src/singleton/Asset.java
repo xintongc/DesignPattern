@@ -5,7 +5,7 @@ public class Asset {
     private static Asset asset;// = new Asset();
 
     private Asset(){
-        //...
+        //...constuctor
     }
 
     public static Asset getAsset() {
